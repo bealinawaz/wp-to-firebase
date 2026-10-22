@@ -31,8 +31,8 @@ final class WPWTF_Admin {
 	 */
 	public static function add_page() {
 		add_options_page(
-			__( 'WPW to Firebase', 'wpw-to-firebase' ),
-			__( 'WPW to Firebase', 'wpw-to-firebase' ),
+			__( 'WP to Firebase', 'wpw-to-firebase' ),
+			__( 'WP to Firebase', 'wpw-to-firebase' ),
 			'manage_options',
 			self::PAGE,
 			array( __CLASS__, 'render_page' )
@@ -344,7 +344,7 @@ final class WPWTF_Admin {
 			return;
 		}
 		wp_add_privacy_policy_content(
-			__( 'WPW to Firebase', 'wpw-to-firebase' ),
+			__( 'WP to Firebase', 'wpw-to-firebase' ),
 			'<p>' . esc_html__( 'This site may send account details (email address, name, and role) and order details (billing and shipping addresses, contact details, and purchased items) to a Firebase Realtime Database operated by Google, depending on the plugin settings. The data is used to power connected apps and services.', 'wpw-to-firebase' ) . '</p>'
 		);
 	}

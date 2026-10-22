@@ -1,4 +1,4 @@
-# WPW to Firebase
+# WP to Firebase
 
 Sync WooCommerce products and orders and WordPress users to a Firebase Realtime Database, in the background and as they change.
 
@@ -44,7 +44,7 @@ Each record also contains its WordPress ID in the `id` field.
 1. Install and activate the plugin.
 2. In the [Firebase console](https://console.firebase.google.com/), create a Realtime Database and copy its URL.
 3. Open **Project settings → Service accounts** and click **Generate new private key**.
-4. In WordPress, go to **Settings → WPW to Firebase**, paste the database URL and the full contents of the key file, choose what to sync, and save.
+4. In WordPress, go to **Settings → WP to Firebase**, paste the database URL and the full contents of the key file, choose what to sync, and save.
 5. Click **Test connection**, then **Sync now**.
 
 ## External services

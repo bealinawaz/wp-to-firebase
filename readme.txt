@@ -1,11 +1,11 @@
-=== WPW to Firebase ===
+=== WP to Firebase – Sync WooCommerce & WordPress Data ===
 Contributors: imalinawaz
 Donate link: https://www.buymeacoffee.com/bealinawaz
 Tags: firebase, woocommerce, realtime database, sync, mobile app
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Sync WooCommerce products and orders and WordPress users to a Firebase Realtime 
 
 == Description ==
 
-WPW to Firebase keeps a Firebase Realtime Database in step with your WordPress site. Use it to power a mobile app, a dashboard, or any service that reads from Firebase, without writing your own export code.
+WP to Firebase keeps a Firebase Realtime Database in step with your WordPress site. Use it to power a mobile app, a dashboard, or any service that reads from Firebase, without writing your own export code.
 
 **What it syncs**
 
@@ -59,7 +59,7 @@ Google privacy policy: https://policies.google.com/privacy
 1. Install and activate the plugin.
 2. In the [Firebase console](https://console.firebase.google.com/), create a Realtime Database and copy its URL.
 3. In the Firebase console, open **Project settings → Service accounts** and click **Generate new private key**. A JSON file downloads.
-4. In WordPress, go to **Settings → WPW to Firebase**. Paste the database URL and the full contents of the JSON file, choose what to sync, and save.
+4. In WordPress, go to **Settings → WP to Firebase**. Paste the database URL and the full contents of the JSON file, choose what to sync, and save.
 5. Click **Test connection**, then **Sync now**.
 
 == Frequently Asked Questions ==
@@ -90,6 +90,10 @@ Yes, for users. Product and order syncing requires WooCommerce.
 
 == Changelog ==
 
+= 2.0.1 =
+* Renamed the plugin to WP to Firebase. Settings are unchanged.
+* Added a plugin icon and banner.
+
 = 2.0.0 =
 * Rebuilt from the ground up.
 * New: full sync in the background, in batches of 50, with an optional schedule.
@@ -106,5 +110,8 @@ Yes, for users. Product and order syncing requires WooCommerce.
 
 == Upgrade Notice ==
 
+= 2.0.1 =
+The plugin is now called WP to Firebase. No action needed; your settings are kept.
+
 = 2.0.0 =
-Complete rebuild with background syncing, live updates, and secure service account authentication. Add a service account key in Settings → WPW to Firebase after updating.
+Complete rebuild with background syncing, live updates, and secure service account authentication. Add a service account key in Settings → WP to Firebase after updating.
