@@ -39,6 +39,10 @@ Records are written under the path you choose (default `wordpress`), with keys p
 `wordpress/orders/order_1057`
 `wordpress/users/user_7`
 
+**Custom development**
+
+Need extra fields, Cloud Firestore, a different data structure, or a mobile app built on this data? The plugin is built and maintained by Ali Nawaz, a WordPress and full stack developer. [Get in touch for custom work](https://bealinawaz.com/contact-me/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
+
 == External services ==
 
 This plugin connects to two Google services to write your data to Firebase. Nothing is sent until you add a database URL and a service account key and enable at least one type of data.
@@ -87,6 +91,10 @@ Firebase treats objects with sequential numeric keys as arrays, which makes data
 = Does it work without WooCommerce? =
 
 Yes, for users. Product and order syncing requires WooCommerce.
+
+= Can you customize the plugin for my project? =
+
+Yes. For custom fields, other Firebase services, or a full integration with your app, [contact Ali Nawaz](https://bealinawaz.com/contact-me/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
 
 == Changelog ==
 

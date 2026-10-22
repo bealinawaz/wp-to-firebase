@@ -76,6 +76,10 @@ readme.txt                          WordPress.org readme
 - WooCommerce 7.1 or later for products and orders (tested up to 11.2)
 - PHP OpenSSL extension
 
+## Custom development
+
+Need extra fields, Cloud Firestore, a different data structure, or a mobile app built on this data? The plugin is built and maintained by [Ali Nawaz](https://bealinawaz.com/?utm_source=github&utm_medium=readme&utm_campaign=wpw-to-firebase), a WordPress and full stack developer. [Get in touch for custom work](https://bealinawaz.com/contact-me/?utm_source=github&utm_medium=readme&utm_campaign=wpw-to-firebase).
+
 ## License
 
 GPLv2 or later. See https://www.gnu.org/licenses/gpl-2.0.html.
