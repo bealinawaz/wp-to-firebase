@@ -5,7 +5,7 @@ Tags: firebase, firestore, woocommerce, mobile app, sync
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,11 +121,18 @@ Yes, for users. Product and order syncing requires WooCommerce.
 
 Yes. Custom fields, other Firebase services and full integrations with your app are available as paid custom work; see Custom development above.
 
+= Is the plugin available in my language? =
+
+The plugin is ready for translation, and translations are made by volunteers on WordPress.org. You can help translate it into your language at [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wpw-to-firebase/). Once a language is 90% translated, WordPress installs the translation automatically through language packs. A translation template, languages/wpw-to-firebase.pot, is included for tools such as Poedit and Loco Translate.
+
 == Screenshots ==
 
 1. Settings → WP to Firebase: choose Cloud Firestore or the Realtime Database, choose users, products or orders, turn on live updates and run a full sync.
 
 == Changelog ==
+
+= 2.1.1 (2026-11-15) =
+* Translations: a translation template (languages/wpw-to-firebase.pot) is included, and the readme explains how to translate the plugin on translate.wordpress.org.
 
 = 2.1.0 (2026-11-15) =
 * New: Cloud Firestore support. Choose Cloud Firestore or the Realtime Database under Settings. Products, orders, and users become documents in their own collections, with proper Firestore types for numbers, lists, and nested details.
@@ -152,6 +159,9 @@ Yes. Custom fields, other Firebase services and full integrations with your app 
 * Initial version.
 
 == Upgrade Notice ==
+
+= 2.1.1 =
+Translation and right-to-left language improvements. Nothing to change.
 
 = 2.1.0 =
 Adds Cloud Firestore as a database option. Realtime Database sites keep working as before; nothing to change.
