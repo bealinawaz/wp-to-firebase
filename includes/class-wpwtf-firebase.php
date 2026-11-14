@@ -12,9 +12,10 @@ defined( 'ABSPATH' ) || exit;
  */
 final class WPWTF_Firebase {
 
-	const TOKEN_URL       = 'https://oauth2.googleapis.com/token';
-	const TOKEN_TRANSIENT = 'wpwtf_access_token';
-	const SCOPES          = 'https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email';
+	const TOKEN_URL = 'https://oauth2.googleapis.com/token';
+	// Version 2.1.0 added the Firestore scope, so tokens cached by older versions are not reused.
+	const TOKEN_TRANSIENT = 'wpwtf_access_token_v2';
+	const SCOPES          = 'https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/datastore';
 
 	/**
 	 * Returns a cached OAuth access token, requesting a new one when it has expired.
@@ -36,7 +37,14 @@ final class WPWTF_Firebase {
 		}
 
 		$now      = time();
-		$unsigned = self::base64url( wp_json_encode( array( 'alg' => 'RS256', 'typ' => 'JWT' ) ) ) . '.' . self::base64url(
+		$unsigned = self::base64url(
+			wp_json_encode(
+				array(
+					'alg' => 'RS256',
+					'typ' => 'JWT',
+				)
+			)
+		) . '.' . self::base64url(
 			wp_json_encode(
 				array(
 					'iss'   => $account['client_email'],

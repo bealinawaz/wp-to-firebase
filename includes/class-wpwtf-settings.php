@@ -23,13 +23,16 @@ final class WPWTF_Settings {
 	 */
 	public static function defaults() {
 		return array(
-			'database_url'  => '',
-			'path'          => 'wordpress',
-			'sync_users'    => false,
-			'sync_products' => true,
-			'sync_orders'   => false,
-			'live_updates'  => true,
-			'schedule'      => 'none',
+			'target'             => 'rtdb',
+			'database_url'       => '',
+			'firestore_database' => '(default)',
+			'collection_prefix'  => '',
+			'path'               => 'wordpress',
+			'sync_users'         => false,
+			'sync_products'      => true,
+			'sync_orders'        => false,
+			'live_updates'       => true,
+			'schedule'           => 'none',
 		);
 	}
 
@@ -44,6 +47,20 @@ final class WPWTF_Settings {
 
 	/**
 	 * Whether WooCommerce is active, which products and orders depend on.
+	 *
+	 * @return bool
+	 */
+	/**
+	 * Whether data is written to Cloud Firestore instead of the Realtime Database.
+	 *
+	 * @return bool
+	 */
+	public static function uses_firestore() {
+		return 'firestore' === self::get()['target'];
+	}
+
+	/**
+	 * Whether WooCommerce is active.
 	 *
 	 * @return bool
 	 */
@@ -131,9 +148,29 @@ final class WPWTF_Settings {
 			}
 		}
 
+		$settings['target'] = isset( $input['target'] ) && 'firestore' === $input['target'] ? 'firestore' : 'rtdb';
+
+		$database = isset( $input['firestore_database'] ) ? strtolower( trim( (string) $input['firestore_database'] ) ) : '';
+		if ( '' === $database || '(default)' === $database ) {
+			$settings['firestore_database'] = '(default)';
+		} elseif ( preg_match( '/^[a-z][a-z0-9-]{2,62}[a-z0-9]$/', $database ) ) {
+			$settings['firestore_database'] = $database;
+		} else {
+			$settings['firestore_database'] = $current['firestore_database'];
+			add_settings_error( self::OPTION, 'wpwtf_firestore_database', __( 'Enter a Firestore database ID such as (default) or orders-db: 4 to 63 lowercase letters, numbers, and hyphens, starting with a letter.', 'wpw-to-firebase' ) );
+		}
+
+		$prefix                        = isset( $input['collection_prefix'] ) ? preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $input['collection_prefix'] ) : '';
+		$settings['collection_prefix'] = substr( $prefix, 0, 50 );
+
+		// Collections or the target changed: the next full sync writes every document again.
+		if ( $settings['target'] !== $current['target'] || $settings['firestore_database'] !== $current['firestore_database'] || $settings['collection_prefix'] !== $current['collection_prefix'] ) {
+			WPWTF_Firestore::reset_hashes();
+		}
+
 		$path             = isset( $input['path'] ) ? preg_replace( '/[^A-Za-z0-9_\-\/]/', '', (string) $input['path'] ) : '';
 		$path             = trim( preg_replace( '#/+#', '/', $path ), '/' );
-		$settings['path'] = '' === $path ? 'wordpress' : $path;
+		$settings['path'] = '' === $path ? 'WordPress' : $path;
 
 		foreach ( array( 'sync_users', 'sync_products', 'sync_orders', 'live_updates' ) as $key ) {
 			$settings[ $key ] = ! empty( $input[ $key ] );

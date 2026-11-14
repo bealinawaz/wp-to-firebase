@@ -65,9 +65,52 @@ final class WPWTF_Admin {
 		);
 
 		add_settings_section( 'wpwtf_connection', __( 'Firebase connection', 'wpw-to-firebase' ), array( __CLASS__, 'render_connection_intro' ), self::PAGE );
-		add_settings_field( 'wpwtf_database_url', __( 'Realtime Database URL', 'wpw-to-firebase' ), array( __CLASS__, 'render_database_url' ), self::PAGE, 'wpwtf_connection', array( 'label_for' => 'wpwtf_database_url' ) );
+		add_settings_field( 'wpwtf_target', __( 'Database', 'wpw-to-firebase' ), array( __CLASS__, 'render_target' ), self::PAGE, 'wpwtf_connection' );
 		add_settings_field( 'wpwtf_service_account', __( 'Service account key', 'wpw-to-firebase' ), array( __CLASS__, 'render_service_account' ), self::PAGE, 'wpwtf_connection', array( 'label_for' => 'wpwtf_service_account_json' ) );
-		add_settings_field( 'wpwtf_path', __( 'Database path', 'wpw-to-firebase' ), array( __CLASS__, 'render_path' ), self::PAGE, 'wpwtf_connection', array( 'label_for' => 'wpwtf_path' ) );
+		add_settings_field(
+			'wpwtf_firestore_database',
+			__( 'Firestore database ID', 'wpw-to-firebase' ),
+			array( __CLASS__, 'render_firestore_database' ),
+			self::PAGE,
+			'wpwtf_connection',
+			array(
+				'label_for' => 'wpwtf_firestore_database',
+				'class'     => 'wpwtf-for-firestore',
+			)
+		);
+		add_settings_field(
+			'wpwtf_collection_prefix',
+			__( 'Collection prefix', 'wpw-to-firebase' ),
+			array( __CLASS__, 'render_collection_prefix' ),
+			self::PAGE,
+			'wpwtf_connection',
+			array(
+				'label_for' => 'wpwtf_collection_prefix',
+				'class'     => 'wpwtf-for-firestore',
+			)
+		);
+		add_settings_field(
+			'wpwtf_database_url',
+			__( 'Realtime Database URL', 'wpw-to-firebase' ),
+			array( __CLASS__, 'render_database_url' ),
+			self::PAGE,
+			'wpwtf_connection',
+			array(
+				'label_for' => 'wpwtf_database_url',
+				'class'     => 'wpwtf-for-rtdb',
+			)
+		);
+		add_settings_field(
+			'wpwtf_path',
+			__( 'Database path', 'wpw-to-firebase' ),
+			array( __CLASS__, 'render_path' ),
+			self::PAGE,
+			'wpwtf_connection',
+			array(
+				'label_for' => 'wpwtf_path',
+				'class'     => 'wpwtf-for-rtdb',
+			)
+		);
 
 		add_settings_section( 'wpwtf_data', __( 'What to sync', 'wpw-to-firebase' ), '__return_false', self::PAGE );
 		add_settings_field( 'wpwtf_types', __( 'Data', 'wpw-to-firebase' ), array( __CLASS__, 'render_types' ), self::PAGE, 'wpwtf_data' );
@@ -80,6 +123,79 @@ final class WPWTF_Admin {
 	 */
 	public static function render_connection_intro() {
 		echo '<p>' . esc_html__( 'In the Firebase console, open Project settings, then Service accounts, and click "Generate new private key". Paste the contents of the downloaded file below.', 'wpw-to-firebase' ) . '</p>';
+	}
+
+	/**
+	 * Database choice: Cloud Firestore or Realtime Database.
+	 */
+	public static function render_target() {
+		$target  = WPWTF_Settings::get()['target'];
+		$options = array(
+			'firestore' => array( __( 'Cloud Firestore', 'wpw-to-firebase' ), __( 'Recommended by Firebase for new apps, and the database FlutterFlow uses. Each item becomes a document in a users, products, or orders collection.', 'wpw-to-firebase' ) ),
+			'rtdb'      => array( __( 'Realtime Database', 'wpw-to-firebase' ), __( 'Items are written as JSON under a path, for example wordpress/products/product_42.', 'wpw-to-firebase' ) ),
+		);
+		echo '<fieldset id="wpwtf_target">';
+		foreach ( $options as $value => $option ) {
+			printf(
+				'<p><label><input type="radio" name="%1$s[target]" value="%2$s" %3$s /> <strong>%4$s</strong></label><br /><span class="description">%5$s</span></p>',
+				esc_attr( WPWTF_Settings::OPTION ),
+				esc_attr( $value ),
+				checked( $target, $value, false ),
+				esc_html( $option[0] ),
+				esc_html( $option[1] )
+			);
+		}
+		echo '</fieldset>';
+		// Show only the fields for the chosen database. Without JavaScript, every field stays visible.
+		?>
+		<script>
+		( function () {
+			var radios = document.querySelectorAll( '#wpwtf_target input' );
+			function sync() {
+				var firestore = document.querySelector( '#wpwtf_target input[value="firestore"]' ).checked;
+				document.querySelectorAll( '.wpwtf-for-firestore' ).forEach( function ( row ) { row.hidden = ! firestore; } );
+				document.querySelectorAll( '.wpwtf-for-rtdb' ).forEach( function ( row ) { row.hidden = firestore; } );
+			}
+			radios.forEach( function ( radio ) { radio.addEventListener( 'change', sync ); } );
+			document.addEventListener( 'DOMContentLoaded', sync );
+		}() );
+		</script>
+		<?php
+	}
+
+	/**
+	 * Firestore database ID.
+	 */
+	public static function render_firestore_database() {
+		printf(
+			'<input type="text" id="wpwtf_firestore_database" class="regular-text code" name="%1$s[firestore_database]" value="%2$s" />',
+			esc_attr( WPWTF_Settings::OPTION ),
+			esc_attr( WPWTF_Settings::get()['firestore_database'] )
+		);
+		$account = WPWTF_Settings::service_account();
+		echo '<p class="description">';
+		if ( $account && ! empty( $account['project_id'] ) ) {
+			printf(
+				/* translators: %s: Firebase project ID. */
+				esc_html__( 'Leave (default) unless you created a named database. Project: %s, from the service account key.', 'wpw-to-firebase' ),
+				'<code>' . esc_html( $account['project_id'] ) . '</code>'
+			);
+		} else {
+			esc_html_e( 'Leave (default) unless you created a named database. The project is read from the service account key.', 'wpw-to-firebase' );
+		}
+		echo '</p>';
+	}
+
+	/**
+	 * Collection prefix.
+	 */
+	public static function render_collection_prefix() {
+		printf(
+			'<input type="text" id="wpwtf_collection_prefix" class="regular-text code" name="%1$s[collection_prefix]" value="%2$s" placeholder="wp_" />',
+			esc_attr( WPWTF_Settings::OPTION ),
+			esc_attr( WPWTF_Settings::get()['collection_prefix'] )
+		);
+		echo '<p class="description">' . esc_html__( 'Optional. With wp_, products go to the wp_products collection, for example wp_products/product_42. Leave empty for products, orders, and users.', 'wpw-to-firebase' ) . '</p>';
 	}
 
 	/**
@@ -185,6 +301,7 @@ final class WPWTF_Admin {
 			printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $value ), selected( WPWTF_Settings::get()['schedule'], $value, false ), esc_html( $label ) );
 		}
 		echo '</select>';
+		echo '<p class="description">' . esc_html__( 'With Cloud Firestore, items that have not changed since the last sync are skipped, so a daily full sync stays well inside the free write quota. Live updates keep Firestore current between full syncs.', 'wpw-to-firebase' ) . '</p>';
 	}
 
 	/**
@@ -253,7 +370,11 @@ final class WPWTF_Admin {
 		} elseif ( $state['finished'] ) {
 			/* translators: 1: date and time, 2: items synced, such as "120 products, 35 orders". */
 			$message = sprintf( __( 'Last full sync finished on %1$s: %2$s.', 'wpw-to-firebase' ), wp_date( $format, $state['finished'] ), $counts );
-			$class   = 'notice-success';
+			if ( ! empty( $state['skipped'] ) ) {
+				/* translators: %s: number of items. */
+				$message .= ' ' . sprintf( _n( '%s unchanged item was skipped.', '%s unchanged items were skipped.', (int) $state['skipped'], 'wpw-to-firebase' ), number_format_i18n( (int) $state['skipped'] ) );
+			}
+			$class = 'notice-success';
 		} else {
 			return;
 		}
@@ -275,10 +396,11 @@ final class WPWTF_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You are not allowed to do this.', 'wpw-to-firebase' ) );
 		}
-		$result = WPWTF_Firebase::request( 'GET', WPWTF_Firebase::path(), null, array( 'shallow' => 'true' ) );
+		$firestore = WPWTF_Settings::uses_firestore();
+		$result    = $firestore ? WPWTF_Firestore::test() : WPWTF_Firebase::request( 'GET', WPWTF_Firebase::path(), null, array( 'shallow' => 'true' ) );
 		self::redirect_with_notice(
 			is_wp_error( $result ) ? 'error' : 'success',
-			is_wp_error( $result ) ? $result->get_error_message() : __( 'Connected to Firebase successfully.', 'wpw-to-firebase' )
+			is_wp_error( $result ) ? $result->get_error_message() : ( $firestore ? __( 'Connected to Cloud Firestore successfully.', 'wpw-to-firebase' ) : __( 'Connected to Firebase successfully.', 'wpw-to-firebase' ) )
 		);
 	}
 
@@ -345,7 +467,7 @@ final class WPWTF_Admin {
 		}
 		wp_add_privacy_policy_content(
 			__( 'WP to Firebase', 'wpw-to-firebase' ),
-			'<p>' . esc_html__( 'This site may send account details (email address, name, and role) and order details (billing and shipping addresses, contact details, and purchased items) to a Firebase Realtime Database operated by Google, depending on the plugin settings. The data is used to power connected apps and services.', 'wpw-to-firebase' ) . '</p>'
+			'<p>' . esc_html__( 'This site may send account details (email address, name, and role) and order details (billing and shipping addresses, contact details, and purchased items) to Cloud Firestore or a Firebase Realtime Database operated by Google, depending on the plugin settings. The data is used to power connected apps and services.', 'wpw-to-firebase' ) . '</p>'
 		);
 	}
 

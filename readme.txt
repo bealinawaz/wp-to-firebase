@@ -1,19 +1,21 @@
-=== WP to Firebase – Sync WooCommerce & WordPress Data ===
+=== WP to Firebase – Sync WooCommerce & WordPress to Firestore and Realtime Database ===
 Contributors: imalinawaz
 Donate link: https://www.buymeacoffee.com/bealinawaz
-Tags: firebase, woocommerce, realtime database, sync, mobile app
+Tags: firebase, firestore, woocommerce, mobile app, sync
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Sync WooCommerce products and orders and WordPress users to a Firebase Realtime Database, in the background and as they change.
+Sync WooCommerce products and orders and WordPress users to Cloud Firestore or a Firebase Realtime Database, in the background and as they change.
 
 == Description ==
 
-WP to Firebase keeps a Firebase Realtime Database in step with your WordPress site. Use it to power a mobile app, a dashboard, or any service that reads from Firebase, without writing your own export code.
+WP to Firebase keeps Cloud Firestore or a Firebase Realtime Database in step with your WordPress site. Use it to power a mobile app built with Flutter, FlutterFlow, or React Native, a dashboard, or any service that reads from Firebase, without writing your own export code.
+
+**New in 2.1: Cloud Firestore, free.** Firebase recommends Cloud Firestore for new apps, and FlutterFlow works with Firestore. Each product, order, and user becomes a document in a `products`, `orders`, or `users` collection. Items that have not changed since the last sync are skipped, so scheduled syncs stay inside Firestore's free daily write quota.
 
 **What it syncs**
 
@@ -33,7 +35,15 @@ You choose which of these to sync. Products are on by default. Users and orders 
 
 **Data structure**
 
-Records are written under the path you choose (default `wordpress`), with keys prefixed by type:
+In Cloud Firestore, each item is a document in its own collection, with an optional collection prefix:
+
+`products/product_42`
+`orders/order_1057`
+`users/user_7`
+
+Numbers, true/false values, lists, and nested details such as billing addresses and line items are stored with their proper Firestore types, so you can query and sort them.
+
+In the Realtime Database, records are written under the path you choose (default `wordpress`), with keys prefixed by type:
 
 `wordpress/products/product_42`
 `wordpress/orders/order_1057`
@@ -41,19 +51,22 @@ Records are written under the path you choose (default `wordpress`), with keys p
 
 **Custom development**
 
-Need extra fields, Cloud Firestore, a different data structure, or a mobile app built on this data? The plugin is built and maintained by Ali Nawaz, a WordPress and full stack developer. [Get in touch for custom work](https://bealinawaz.com/contact-me/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
+Need extra fields, posts and custom post types, push notifications, a different data structure, or a mobile app built on this data? The plugin is built and maintained by Ali Nawaz, a WordPress & Shopify developer who builds [custom WordPress plugins](https://bealinawaz.com/services/wordpress-plugin-development/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
 
 == External services ==
 
-This plugin connects to two Google services to write your data to Firebase. Nothing is sent until you add a database URL and a service account key and enable at least one type of data.
+This plugin connects to Google services to write your data to Firebase. Nothing is sent until you add a service account key (and, for the Realtime Database, a database URL) and enable at least one type of data.
 
 **Google OAuth 2.0 token service** (`https://oauth2.googleapis.com/token`)
 Used to exchange your service account credentials for a short-lived access token. The plugin sends a request signed with your service account's private key, containing the service account email and the requested permissions. This happens when a sync runs and no valid token is cached, at most about once an hour.
 
+**Cloud Firestore** (`https://firestore.googleapis.com`)
+Used when Cloud Firestore is chosen as the database. Receives the same data described below for the Realtime Database, as documents in your project's Firestore database. Data is sent during a full sync, on your chosen schedule, and a few seconds after an item changes if live updates are on. "Test connection" reads at most one document.
+
 **Firebase Realtime Database** (your database URL, ending in `firebaseio.com` or `firebasedatabase.app`)
 Receives the data you choose to sync: product details, order details including customer names, email addresses, phone numbers, and billing and shipping addresses, and user details including email addresses, names, and roles. Data is sent during a full sync, on your chosen schedule, and a few seconds after an item changes if live updates are on.
 
-Both services are provided by Google.
+These services are provided by Google.
 Firebase terms of service: https://firebase.google.com/terms
 Google Cloud terms of service: https://cloud.google.com/terms
 Google privacy policy: https://policies.google.com/privacy
@@ -61,12 +74,24 @@ Google privacy policy: https://policies.google.com/privacy
 == Installation ==
 
 1. Install and activate the plugin.
-2. In the [Firebase console](https://console.firebase.google.com/), create a Realtime Database and copy its URL.
+2. In the [Firebase console](https://console.firebase.google.com/), create a Cloud Firestore database, or a Realtime Database and copy its URL.
 3. In the Firebase console, open **Project settings → Service accounts** and click **Generate new private key**. A JSON file downloads.
-4. In WordPress, go to **Settings → WP to Firebase**. Paste the database URL and the full contents of the JSON file, choose what to sync, and save.
+4. In WordPress, go to **Settings → WP to Firebase**. Choose Cloud Firestore or Realtime Database, paste the full contents of the JSON file (and the database URL for the Realtime Database), choose what to sync, and save.
 5. Click **Test connection**, then **Sync now**.
 
 == Frequently Asked Questions ==
+
+= Should I use Cloud Firestore or the Realtime Database? =
+
+For a new app, Cloud Firestore. Firebase recommends it for new projects, it has richer queries, and FlutterFlow works with it. Choose the Realtime Database if your app already reads from one. You can switch at any time; the next full sync writes everything to the new database.
+
+= Will syncing use up my Firestore free quota? =
+
+Firestore's free tier allows 20,000 document writes a day. The plugin skips items that have not changed since they were last written, so after the first sync, a scheduled full sync only writes what changed. Live updates write one document per change. A daily schedule is enough for most stores, with live updates on.
+
+= Can I use a named Firestore database or a prefix for the collections? =
+
+Yes. Enter the database ID under Firestore database ID (leave `(default)` for the default database), and an optional collection prefix such as `wp_` to write to `wp_products`, `wp_orders`, and `wp_users`.
 
 = Is it safe to store the service account key in WordPress? =
 
@@ -86,7 +111,7 @@ Yes, when live updates are on. Trashing or deleting a product, order, or user re
 
 = Why are keys prefixed with product_, order_, and user_? =
 
-Firebase treats objects with sequential numeric keys as arrays, which makes data harder to read and update. The prefix keeps every record addressable by its key. Each record also includes its WordPress ID in the `id` field.
+The Realtime Database treats objects with sequential numeric keys as arrays, which makes data harder to read and update. The prefix keeps every record addressable by its key, and the same document IDs are used in Cloud Firestore. Each record also includes its WordPress ID in the `id` field.
 
 = Does it work without WooCommerce? =
 
@@ -94,9 +119,19 @@ Yes, for users. Product and order syncing requires WooCommerce.
 
 = Can you customize the plugin for my project? =
 
-Yes. For custom fields, other Firebase services, or a full integration with your app, [contact Ali Nawaz](https://bealinawaz.com/contact-me/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
+Yes. Custom fields, other Firebase services and full integrations with your app are available as paid custom work; see Custom development above.
+
+== Screenshots ==
+
+1. Settings → WP to Firebase: choose Cloud Firestore or the Realtime Database, choose users, products or orders, turn on live updates and run a full sync.
 
 == Changelog ==
+
+= 2.1.0 (2026-11-15) =
+* New: Cloud Firestore support. Choose Cloud Firestore or the Realtime Database under Settings. Products, orders, and users become documents in their own collections, with proper Firestore types for numbers, lists, and nested details.
+* New: unchanged items are skipped during a Firestore full sync, to stay inside the free write quota. The sync status shows how many were skipped.
+* New: named Firestore databases and an optional collection prefix.
+* New: the `wpwtf_firestore_api_base` filter, for the Firestore emulator in development.
 
 = 2.0.1 =
 * Renamed the plugin to WP to Firebase. Settings are unchanged.
@@ -117,6 +152,9 @@ Yes. For custom fields, other Firebase services, or a full integration with your
 * Initial version.
 
 == Upgrade Notice ==
+
+= 2.1.0 =
+Adds Cloud Firestore as a database option. Realtime Database sites keep working as before; nothing to change.
 
 = 2.0.1 =
 The plugin is now called WP to Firebase. No action needed; your settings are kept.

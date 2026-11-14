@@ -1,6 +1,6 @@
 # WP to Firebase
 
-Sync WooCommerce products and orders and WordPress users to a Firebase Realtime Database, in the background and as they change.
+Sync WooCommerce products and orders and WordPress users to Cloud Firestore or a Firebase Realtime Database, in the background and as they change.
 
 [![WordPress plugin](https://img.shields.io/wordpress/plugin/v/wpw-to-firebase)](https://wordpress.org/plugins/wpw-to-firebase/)
 ![Tested up to WordPress 7.1](https://img.shields.io/badge/WordPress-7.1-blue)
@@ -28,7 +28,15 @@ Passwords, password reset keys, and other credentials are never sent.
 
 ## Data structure
 
-Records are written under a configurable root path (default `wordpress`). Keys are prefixed by type, so Firebase never converts a collection of sequential IDs into an array:
+**Cloud Firestore (2.1.0):** one collection per type, with an optional prefix, written with `documents:batchWrite` (up to 50 writes per request). Values keep their Firestore types (`integerValue`, `doubleValue`, `booleanValue`, `arrayValue`, `mapValue`); a list nested directly in a list is stored as a map, because Firestore arrays cannot contain arrays. A content hash per document skips unchanged items during full syncs, to stay inside the free tier of 20,000 writes a day.
+
+```
+products/product_42
+orders/order_1057
+users/user_7
+```
+
+**Realtime Database:** records are written under a configurable root path (default `wordpress`). Keys are prefixed by type, so Firebase never converts a collection of sequential IDs into an array:
 
 ```
 wordpress/
@@ -42,9 +50,15 @@ Each record also contains its WordPress ID in the `id` field.
 ## Setup
 
 1. Install and activate the plugin.
-2. In the [Firebase console](https://console.firebase.google.com/), create a Realtime Database and copy its URL.
+2. In the [Firebase console](https://console.firebase.google.com/), create a Cloud Firestore database, or a Realtime Database and copy its URL.
 3. Open **Project settings → Service accounts** and click **Generate new private key**.
-4. In WordPress, go to **Settings → WP to Firebase**, paste the database URL and the full contents of the key file, choose what to sync, and save.
+4. In WordPress, go to **Settings → WP to Firebase**, choose Cloud Firestore or Realtime Database, paste the full contents of the key file (and the database URL for the Realtime Database), choose what to sync, and save.
+
+For local development, point the plugin at the Firestore emulator:
+
+```php
+add_filter( 'wpwtf_firestore_api_base', fn() => 'http://127.0.0.1:8080/v1' );
+```
 5. Click **Test connection**, then **Sync now**.
 
 ## External services
@@ -52,7 +66,8 @@ Each record also contains its WordPress ID in the `id` field.
 The plugin sends data to Google services only after you configure it:
 
 - **Google OAuth 2.0 token service** (`https://oauth2.googleapis.com/token`) exchanges your signed service account credentials for a short-lived access token.
-- **Firebase Realtime Database** (your database URL) receives the products, orders, and users you choose to sync.
+- **Cloud Firestore** (`https://firestore.googleapis.com`) receives the products, orders, and users you choose to sync when Firestore is selected.
+- **Firebase Realtime Database** (your database URL) receives them when the Realtime Database is selected.
 
 See the [Firebase terms](https://firebase.google.com/terms), [Google Cloud terms](https://cloud.google.com/terms), and [Google privacy policy](https://policies.google.com/privacy).
 
@@ -62,6 +77,7 @@ See the [Firebase terms](https://firebase.google.com/terms), [Google Cloud terms
 wpw-to-firebase.php                 Plugin header and bootstrap
 includes/class-wpwtf-settings.php   Settings, validation, service account storage
 includes/class-wpwtf-firebase.php   OAuth token and Realtime Database REST client
+includes/class-wpwtf-firestore.php  Cloud Firestore REST client, value encoding, change detection
 includes/class-wpwtf-exporter.php   Builds product, order, and user records
 includes/class-wpwtf-sync.php       Background batches and live updates via WP-Cron
 includes/class-wpwtf-admin.php      Settings screen, connection test, manual sync
@@ -78,7 +94,7 @@ readme.txt                          WordPress.org readme
 
 ## Custom development
 
-Need extra fields, Cloud Firestore, a different data structure, or a mobile app built on this data? The plugin is built and maintained by [Ali Nawaz](https://bealinawaz.com/?utm_source=github&utm_medium=readme&utm_campaign=wpw-to-firebase), a WordPress and full stack developer. [Get in touch for custom work](https://bealinawaz.com/contact-me/?utm_source=github&utm_medium=readme&utm_campaign=wpw-to-firebase).
+Need extra fields, posts and custom post types, push notifications, a different data structure, or a mobile app built on this data? The plugin is built and maintained by [Ali Nawaz](https://bealinawaz.com/?utm_source=github&utm_medium=readme&utm_campaign=wpw-to-firebase), a WordPress and full stack developer. [Get in touch for custom work](https://bealinawaz.com/contact-me/?utm_source=github&utm_medium=readme&utm_campaign=wpw-to-firebase).
 
 ## License
 

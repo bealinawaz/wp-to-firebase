@@ -66,6 +66,7 @@ final class WPWTF_Sync {
 				'started'  => 0,
 				'finished' => 0,
 				'error'    => '',
+				'skipped'  => 0,
 			)
 		);
 	}
@@ -92,6 +93,7 @@ final class WPWTF_Sync {
 				'started'  => time(),
 				'finished' => 0,
 				'error'    => '',
+				'skipped'  => 0,
 			),
 			false
 		);
@@ -113,7 +115,9 @@ final class WPWTF_Sync {
 		if ( null !== $type && in_array( $type, WPWTF_Settings::enabled_types(), true ) ) {
 			$batch = WPWTF_Exporter::batch( $type, $state['offset'] );
 			if ( $batch['records'] ) {
-				$result = WPWTF_Firebase::request( 'PATCH', WPWTF_Firebase::path( $type ), $batch['records'] );
+				$result = WPWTF_Settings::uses_firestore()
+					? WPWTF_Firestore::write( $type, $batch['records'] )
+					: WPWTF_Firebase::request( 'PATCH', WPWTF_Firebase::path( $type ), $batch['records'] );
 				if ( is_wp_error( $result ) ) {
 					$state['running']  = false;
 					$state['finished'] = time();
@@ -122,6 +126,9 @@ final class WPWTF_Sync {
 					return;
 				}
 				$state['counts'][ $type ] += count( $batch['records'] );
+				if ( is_int( $result ) ) {
+					$state['skipped'] += count( $batch['records'] ) - $result;
+				}
 			}
 
 			if ( $batch['read'] < WPWTF_Exporter::BATCH_SIZE ) {
@@ -157,10 +164,17 @@ final class WPWTF_Sync {
 			return;
 		}
 		$record = WPWTF_Exporter::record( $type, $id );
-		$path   = WPWTF_Firebase::path( $type, WPWTF_Exporter::key( $type, $id ) );
-		$result = null === $record
-			? WPWTF_Firebase::request( 'DELETE', $path )
-			: WPWTF_Firebase::request( 'PUT', $path, $record );
+		$key    = WPWTF_Exporter::key( $type, $id );
+		if ( WPWTF_Settings::uses_firestore() ) {
+			$result = null === $record
+				? WPWTF_Firestore::delete( $type, $key )
+				: WPWTF_Firestore::write( $type, array( $key => $record ), false );
+		} else {
+			$path   = WPWTF_Firebase::path( $type, $key );
+			$result = null === $record
+				? WPWTF_Firebase::request( 'DELETE', $path )
+				: WPWTF_Firebase::request( 'PUT', $path, $record );
+		}
 		self::log_result( $result );
 	}
 
@@ -174,7 +188,12 @@ final class WPWTF_Sync {
 		if ( ! in_array( $type, WPWTF_Settings::enabled_types(), true ) ) {
 			return;
 		}
-		self::log_result( WPWTF_Firebase::request( 'DELETE', WPWTF_Firebase::path( $type, WPWTF_Exporter::key( $type, $id ) ) ) );
+		$key = WPWTF_Exporter::key( $type, $id );
+		self::log_result(
+			WPWTF_Settings::uses_firestore()
+				? WPWTF_Firestore::delete( $type, $key )
+				: WPWTF_Firebase::request( 'DELETE', WPWTF_Firebase::path( $type, $key ) )
+		);
 	}
 
 	/**
