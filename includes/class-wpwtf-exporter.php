@@ -77,7 +77,11 @@ final class WPWTF_Exporter {
 		foreach ( $items as $item ) {
 			$record = self::build( $type, $item );
 			if ( null !== $record ) {
-				$records[ self::key( $type, $record['id'] ) ] = $record;
+				$key    = self::key( $type, $record['id'] );
+				$record = self::filter( $record, $type, $item );
+				if ( null !== $record ) {
+					$records[ $key ] = $record;
+				}
 			}
 		}
 		return array(
@@ -94,19 +98,41 @@ final class WPWTF_Exporter {
 	 * @return array|null
 	 */
 	public static function record( $type, $id ) {
+		$item = null;
 		if ( 'users' === $type ) {
 			$user = get_userdata( $id );
-			return $user ? self::build( $type, $user ) : null;
-		}
-		if ( 'products' === $type ) {
+			$item = $user ? $user : null;
+		} elseif ( 'products' === $type ) {
 			$product = wc_get_product( $id );
-			return $product && in_array( $product->get_status(), array( 'publish', 'private' ), true ) ? self::build( $type, $product ) : null;
-		}
-		if ( 'orders' === $type ) {
+			$item    = $product && in_array( $product->get_status(), array( 'publish', 'private' ), true ) ? $product : null;
+		} elseif ( 'orders' === $type ) {
 			$order = wc_get_order( $id );
-			return $order && 'shop_order' === $order->get_type() ? self::build( $type, $order ) : null;
+			$item  = $order && 'shop_order' === $order->get_type() ? $order : null;
 		}
-		return null;
+		$record = null === $item ? null : self::build( $type, $item );
+		return null === $record ? null : self::filter( $record, $type, $item );
+	}
+
+	/**
+	 * Lets add-ons and site code change a record before it is sent. The Firebase key is set before this runs.
+	 *
+	 * @param array  $record Record built by the plugin.
+	 * @param string $type   Data type: users, products, or orders.
+	 * @param mixed  $item   WP_User, WC_Product, or WC_Order.
+	 * @return array|null The record, or null to treat the item as not synced: a full sync skips it and a live update removes it.
+	 */
+	private static function filter( array $record, $type, $item ) {
+		/**
+		 * Filters a record before it is written to Firebase.
+		 *
+		 * @since 2.2.0
+		 *
+		 * @param array  $record Record built by the plugin.
+		 * @param string $type   Data type: users, products, or orders.
+		 * @param mixed  $item   WP_User, WC_Product, or WC_Order.
+		 */
+		$record = apply_filters( 'wpwtf_record', $record, $type, $item );
+		return is_array( $record ) ? $record : null;
 	}
 
 	/**

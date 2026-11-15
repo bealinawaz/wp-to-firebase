@@ -3,7 +3,7 @@
  * Plugin Name:          WP to Firebase – Sync WooCommerce & WordPress Data
  * Plugin URI:           https://wordpress.org/plugins/wpw-to-firebase/
  * Description:          Syncs WordPress users and WooCommerce products and orders to Cloud Firestore or a Firebase Realtime Database.
- * Version:              2.1.1
+ * Version:              2.2.0
  * Requires at least:    6.2
  * Requires PHP:         7.4
  * Author:               Ali Nawaz
@@ -20,7 +20,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WPWTF_VERSION', '2.1.1' );
+define( 'WPWTF_VERSION', '2.2.0' );
 define( 'WPWTF_FILE', __FILE__ );
 
 require_once __DIR__ . '/includes/class-wpwtf-settings.php';

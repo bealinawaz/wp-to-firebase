@@ -5,7 +5,7 @@ Tags: firebase, firestore, woocommerce, mobile app, sync
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.1.1
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -131,6 +131,9 @@ The plugin is ready for translation, and translations are made by volunteers on 
 
 == Changelog ==
 
+= 2.2.0 (2026-11-15) =
+* Developer: the `wpwtf_record` filter changes a user, product, or order record before it is written to Firebase. It receives the record, the data type, and the WordPress object. Nothing changes unless code uses the filter.
+
 = 2.1.1 (2026-11-15) =
 * Translations: a translation template (languages/wpw-to-firebase.pot) is included, and the readme explains how to translate the plugin on translate.wordpress.org.
 
@@ -159,6 +162,9 @@ The plugin is ready for translation, and translations are made by volunteers on 
 * Initial version.
 
 == Upgrade Notice ==
+
+= 2.2.0 =
+Adds a developer filter for changing records before they are sent. Nothing to change.
 
 = 2.1.1 =
 Translation and right-to-left language improvements. Nothing to change.
