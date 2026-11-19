@@ -15,6 +15,20 @@ final class WPWTF_Admin {
 	const PAGE = 'wpw-to-firebase';
 
 	/**
+	 * Page of the WP to Firebase Pro add-on on the author's site.
+	 */
+	const PRO_URL = 'https://bealinawaz.com/wordpress-plugins/pro/wp-to-firebase/';
+
+	/**
+	 * Whether the WP to Firebase Pro add-on is active. Checked inside hooks, after all plugins have loaded.
+	 *
+	 * @return bool
+	 */
+	public static function pro_active() {
+		return defined( 'WPWTF_PRO_VERSION' );
+	}
+
+	/**
 	 * Registers admin hooks.
 	 */
 	public static function init() {
@@ -24,6 +38,7 @@ final class WPWTF_Admin {
 		add_action( 'admin_post_wpwtf_test_connection', array( __CLASS__, 'test_connection' ) );
 		add_action( 'admin_post_wpwtf_sync_now', array( __CLASS__, 'sync_now' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( WPWTF_FILE ), array( __CLASS__, 'action_links' ) );
+		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
 	}
 
 	/**
@@ -48,6 +63,20 @@ final class WPWTF_Admin {
 	public static function action_links( $links ) {
 		array_unshift( $links, '<a href="' . esc_url( self::page_url() ) . '">' . esc_html__( 'Settings', 'wpw-to-firebase' ) . '</a>' );
 		return $links;
+	}
+
+	/**
+	 * Adds a "WP to Firebase Pro" link to the plugin's row on the Plugins screen, only while Pro isn't active.
+	 *
+	 * @param array  $meta Row meta links.
+	 * @param string $file Plugin file.
+	 * @return array
+	 */
+	public static function plugin_row_meta( $meta, $file ) {
+		if ( plugin_basename( WPWTF_FILE ) === $file && ! self::pro_active() ) {
+			$meta[] = '<a href="' . esc_url( self::PRO_URL ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'WP to Firebase Pro', 'wpw-to-firebase' ) . '</a>';
+		}
+		return $meta;
 	}
 
 	/**
@@ -336,6 +365,27 @@ final class WPWTF_Admin {
 				<?php wp_nonce_field( 'wpwtf_sync_now' ); ?>
 				<?php submit_button( __( 'Sync now', 'wpw-to-firebase' ), 'primary', 'submit', false ); ?>
 			</form>
+			<?php self::render_pro_box(); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * One short note about the Pro add-on below the Sync buttons, only while Pro isn't active.
+	 */
+	private static function render_pro_box() {
+		if ( self::pro_active() ) {
+			return;
+		}
+		?>
+		<div class="card">
+			<h2><?php esc_html_e( 'Need more? WP to Firebase Pro', 'wpw-to-firebase' ); ?></h2>
+			<ul class="ul-disc">
+				<li><?php esc_html_e( 'Field mapper: choose, rename and type every field your app reads, with a before-and-after preview.', 'wpw-to-firebase' ); ?></li>
+				<li><?php esc_html_e( 'Up to 30 custom product, order or user meta keys per type, with credential-like keys refused.', 'wpw-to-firebase' ); ?></li>
+				<li><?php esc_html_e( 'Firebase Cloud Messaging push messages for new posts and order status changes, plus messages you compose or schedule.', 'wpw-to-firebase' ); ?></li>
+			</ul>
+			<p><a class="button" href="<?php echo esc_url( self::PRO_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'See WP to Firebase Pro', 'wpw-to-firebase' ); ?></a></p>
 		</div>
 		<?php
 	}

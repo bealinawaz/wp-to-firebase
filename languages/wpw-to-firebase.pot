@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP to Firebase – Sync WooCommerce & WordPress Data 2.2.0\n"
+"Project-Id-Version: WP to Firebase – Sync WooCommerce & WordPress Data 2.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpw-to-firebase\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-15T15:08:14+00:00\n"
+"POT-Creation-Date: 2026-11-19T06:34:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wpw-to-firebase\n"
@@ -39,220 +39,244 @@ msgstr ""
 msgid "https://bealinawaz.com"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:34
-#: includes/class-wpwtf-admin.php:35
-#: includes/class-wpwtf-admin.php:469
+#: includes/class-wpwtf-admin.php:49
+#: includes/class-wpwtf-admin.php:50
+#: includes/class-wpwtf-admin.php:519
 msgid "WP to Firebase"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:49
+#: includes/class-wpwtf-admin.php:64
 msgid "Settings"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:67
+#: includes/class-wpwtf-admin.php:77
+msgid "WP to Firebase Pro"
+msgstr ""
+
+#: includes/class-wpwtf-admin.php:96
 msgid "Firebase connection"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:68
+#: includes/class-wpwtf-admin.php:97
 msgid "Database"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:69
+#: includes/class-wpwtf-admin.php:98
 msgid "Service account key"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:72
+#: includes/class-wpwtf-admin.php:101
 msgid "Firestore database ID"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:83
+#: includes/class-wpwtf-admin.php:112
 msgid "Collection prefix"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:94
+#: includes/class-wpwtf-admin.php:123
 msgid "Realtime Database URL"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:105
+#: includes/class-wpwtf-admin.php:134
 msgid "Database path"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:115
+#: includes/class-wpwtf-admin.php:144
 msgid "What to sync"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:116
+#: includes/class-wpwtf-admin.php:145
 msgid "Data"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:117
+#: includes/class-wpwtf-admin.php:146
 msgid "Live updates"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:118
+#: includes/class-wpwtf-admin.php:147
 msgid "Full sync schedule"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:125
+#: includes/class-wpwtf-admin.php:154
 msgid "In the Firebase console, open Project settings, then Service accounts, and click \"Generate new private key\". Paste the contents of the downloaded file below."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:134
+#: includes/class-wpwtf-admin.php:163
 msgid "Cloud Firestore"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:134
+#: includes/class-wpwtf-admin.php:163
 msgid "Recommended by Firebase for new apps, and the database FlutterFlow uses. Each item becomes a document in a users, products, or orders collection."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:135
+#: includes/class-wpwtf-admin.php:164
 msgid "Realtime Database"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:135
+#: includes/class-wpwtf-admin.php:164
 msgid "Items are written as JSON under a path, for example wordpress/products/product_42."
 msgstr ""
 
 #. translators: %s: Firebase project ID.
-#: includes/class-wpwtf-admin.php:180
+#: includes/class-wpwtf-admin.php:209
 #, php-format
 msgid "Leave (default) unless you created a named database. Project: %s, from the service account key."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:184
+#: includes/class-wpwtf-admin.php:213
 msgid "Leave (default) unless you created a named database. The project is read from the service account key."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:198
+#: includes/class-wpwtf-admin.php:227
 msgid "Optional. With wp_, products go to the wp_products collection, for example wp_products/product_42. Leave empty for products, orders, and users."
 msgstr ""
 
 #. translators: %s: service account email address.
-#: includes/class-wpwtf-admin.php:220
+#: includes/class-wpwtf-admin.php:249
 #, php-format
 msgid "Connected as %s."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:225
+#: includes/class-wpwtf-admin.php:254
 msgid "Remove the saved key"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:227
+#: includes/class-wpwtf-admin.php:256
 msgid "To replace the key, paste a new one below."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:233
+#: includes/class-wpwtf-admin.php:262
 msgid "The key is stored in your WordPress database and is never shown again after saving."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:245
+#: includes/class-wpwtf-admin.php:274
 msgid "Data is written under this path, for example wordpress/products/product_42."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:255
+#: includes/class-wpwtf-admin.php:284
 msgid "Users"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:255
+#: includes/class-wpwtf-admin.php:284
 msgid "Email, name, roles, and registration date. Passwords are never sent."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:256
+#: includes/class-wpwtf-admin.php:285
 msgid "WooCommerce products"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:256
+#: includes/class-wpwtf-admin.php:285
 msgid "Prices, stock, images, categories, attributes, and variations."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:257
+#: includes/class-wpwtf-admin.php:286
 msgid "WooCommerce orders"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:257
+#: includes/class-wpwtf-admin.php:286
 msgid "Totals, line items, and customer billing and shipping details."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:270
+#: includes/class-wpwtf-admin.php:299
 msgid "Requires WooCommerce."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:274
+#: includes/class-wpwtf-admin.php:303
 msgid "Users and orders contain personal data. Make sure your privacy policy covers sending it to Firebase."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:285
+#: includes/class-wpwtf-admin.php:314
 msgid "Send changes to Firebase a few seconds after an item is created, updated, or deleted"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:294
+#: includes/class-wpwtf-admin.php:323
 msgid "Only when I click Sync now"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:295
+#: includes/class-wpwtf-admin.php:324
 msgid "Hourly"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:296
+#: includes/class-wpwtf-admin.php:325
 msgid "Twice daily"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:297
+#: includes/class-wpwtf-admin.php:326
 msgid "Daily"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:304
+#: includes/class-wpwtf-admin.php:333
 msgid "With Cloud Firestore, items that have not changed since the last sync are skipped, so a daily full sync stays well inside the free write quota. Live updates keep Firestore current between full syncs."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:327
+#: includes/class-wpwtf-admin.php:356
 msgid "Sync"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:328
+#: includes/class-wpwtf-admin.php:357
 msgid "A full sync sends every enabled item in the background, 50 at a time. It continues as your site receives visits, so it may take a few minutes on a quiet site."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:332
+#: includes/class-wpwtf-admin.php:361
 msgid "Test connection"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:337
+#: includes/class-wpwtf-admin.php:366
 msgid "Sync now"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:350
+#: includes/class-wpwtf-admin.php:382
+msgid "Need more? WP to Firebase Pro"
+msgstr ""
+
+#: includes/class-wpwtf-admin.php:384
+msgid "Field mapper: choose, rename and type every field your app reads, with a before-and-after preview."
+msgstr ""
+
+#: includes/class-wpwtf-admin.php:385
+msgid "Up to 30 custom product, order or user meta keys per type, with credential-like keys refused."
+msgstr ""
+
+#: includes/class-wpwtf-admin.php:386
+msgid "Firebase Cloud Messaging push messages for new posts and order status changes, plus messages you compose or schedule."
+msgstr ""
+
+#: includes/class-wpwtf-admin.php:388
+msgid "See WP to Firebase Pro"
+msgstr ""
+
+#: includes/class-wpwtf-admin.php:400
 msgid "users"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:351
+#: includes/class-wpwtf-admin.php:401
 msgid "products"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:352
+#: includes/class-wpwtf-admin.php:402
 msgid "orders"
 msgstr ""
 
 #. translators: %s: items synced so far, such as "50 products, 0 orders".
-#: includes/class-wpwtf-admin.php:364
+#: includes/class-wpwtf-admin.php:414
 #, php-format
 msgid "Full sync in progress: %s so far."
 msgstr ""
 
 #. translators: 1: date and time, 2: error message.
-#: includes/class-wpwtf-admin.php:368
+#: includes/class-wpwtf-admin.php:418
 #, php-format
 msgid "The last full sync stopped on %1$s: %2$s"
 msgstr ""
 
 #. translators: 1: date and time, 2: items synced, such as "120 products, 35 orders".
-#: includes/class-wpwtf-admin.php:372
+#: includes/class-wpwtf-admin.php:422
 #, php-format
 msgid "Last full sync finished on %1$s: %2$s."
 msgstr ""
 
 #. translators: %s: number of items.
-#: includes/class-wpwtf-admin.php:375
+#: includes/class-wpwtf-admin.php:425
 #, php-format
 msgid "%s unchanged item was skipped."
 msgid_plural "%s unchanged items were skipped."
@@ -260,29 +284,29 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: date and time, 2: error message.
-#: includes/class-wpwtf-admin.php:386
+#: includes/class-wpwtf-admin.php:436
 #, php-format
 msgid "A live update failed on %1$s: %2$s"
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:397
-#: includes/class-wpwtf-admin.php:413
+#: includes/class-wpwtf-admin.php:447
+#: includes/class-wpwtf-admin.php:463
 msgid "You are not allowed to do this."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:403
+#: includes/class-wpwtf-admin.php:453
 msgid "Connected to Cloud Firestore successfully."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:403
+#: includes/class-wpwtf-admin.php:453
 msgid "Connected to Firebase successfully."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:421
+#: includes/class-wpwtf-admin.php:471
 msgid "Full sync started. Reload this page to see progress."
 msgstr ""
 
-#: includes/class-wpwtf-admin.php:470
+#: includes/class-wpwtf-admin.php:520
 msgid "This site may send account details (email address, name, and role) and order details (billing and shipping addresses, contact details, and purchased items) to Cloud Firestore or a Firebase Realtime Database operated by Google, depending on the plugin settings. The data is used to power connected apps and services."
 msgstr ""
 

@@ -1,15 +1,15 @@
 === WP to Firebase – Sync WooCommerce & WordPress to Firestore and Realtime Database ===
 Contributors: imalinawaz
 Donate link: https://www.buymeacoffee.com/bealinawaz
-Tags: firebase, firestore, woocommerce, mobile app, sync
+Tags: firebase, firestore, woocommerce, mobile app, flutter
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Sync WooCommerce products and orders and WordPress users to Cloud Firestore or a Firebase Realtime Database, in the background and as they change.
+Sync WooCommerce products, orders and users to Cloud Firestore or Firebase Realtime Database as they change, for Flutter and FlutterFlow apps.
 
 == Description ==
 
@@ -33,6 +33,8 @@ You choose which of these to sync. Products are on by default. Users and orders 
 * **Safe by design:** passwords, password reset keys, and other credentials are never sent. Nothing runs during normal page loads.
 * **Compatible with WooCommerce High-Performance Order Storage (HPOS).**
 
+**Free, with no Pro needed:** Cloud Firestore and the Realtime Database, products, orders and users, live updates, scheduled full syncs, skipping unchanged items, named databases and collection prefixes, and the `wpwtf_record` filter for developers.
+
 **Data structure**
 
 In Cloud Firestore, each item is a document in its own collection, with an optional collection prefix:
@@ -49,9 +51,20 @@ In the Realtime Database, records are written under the path you choose (default
 `wordpress/orders/order_1057`
 `wordpress/users/user_7`
 
+**WP to Firebase Pro**
+
+WP to Firebase Pro is a separate add-on for apps that need the data in their own shape, or want to send push messages. The free plugin keeps every feature above, and Pro adds:
+
+* **Field mapper:** for products, orders and users, choose which fields are sent, rename each Firebase key and set its type (text, whole number, decimal, true/false or Unix time), down to single billing and shipping fields. The map is used for full syncs and live updates, in Cloud Firestore and the Realtime Database.
+* **Custom meta:** add up to 30 product, order or user meta keys per type, each with its own key and type. Keys that look like credentials, such as passwords, tokens or API keys, are refused.
+* **Preview:** see your newest product, order or user before and after the map, as JSON, before you sync.
+* **Push messages with Firebase Cloud Messaging:** send to a topic, or to a condition of up to 5 topics, when a post is published, and to the customer's own topic when their order reaches a status you choose, with no names, emails or addresses in the message. Compose messages from WordPress, send them now or schedule them, check them with FCM without sending, and see every message in a send history.
+
+Pro uses the service account you already added here. WP to Firebase Pro costs from $29 a year, with a 14-day refund policy. [See WP to Firebase Pro](https://bealinawaz.com/wordpress-plugins/pro/wp-to-firebase/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
+
 **Custom development**
 
-Need extra fields, posts and custom post types, push notifications, a different data structure, or a mobile app built on this data? The plugin is built and maintained by Ali Nawaz, a WordPress & Shopify developer who builds [custom WordPress plugins](https://bealinawaz.com/services/wordpress-plugin-development/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
+Need posts and custom post types, two-way sync, Firebase login, or a mobile app built on this data? The plugin is built and maintained by Ali Nawaz, a WordPress & Shopify developer who builds [custom WordPress plugins](https://bealinawaz.com/services/wordpress-plugin-development/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
 
 == External services ==
 
@@ -117,9 +130,21 @@ The Realtime Database treats objects with sequential numeric keys as arrays, whi
 
 Yes, for users. Product and order syncing requires WooCommerce.
 
+= What does WP to Firebase Pro add? =
+
+A field mapper to choose, rename and type every field, up to 30 custom meta keys per data type, a before-and-after preview, and Firebase Cloud Messaging push messages for new posts, order status changes and messages you compose or schedule. It is a separate add-on that needs this free plugin, and the free features stay free. See [WP to Firebase Pro](https://bealinawaz.com/wordpress-plugins/pro/wp-to-firebase/?utm_source=wordpress.org&utm_medium=plugin-readme&utm_campaign=wpw-to-firebase).
+
+= Can I rename fields or add custom fields without Pro? =
+
+Yes, with code. The free `wpwtf_record` filter receives each user, product or order record before it is written, so a developer can add, remove or rename fields. Pro does the same from a settings screen, with a preview and no code.
+
+= Can the plugin send push notifications? =
+
+The free plugin syncs data only. WP to Firebase Pro sends Firebase Cloud Messaging messages to topics and topic conditions, not to single device tokens. For order updates, your app subscribes each signed-in customer to their own topic, such as `user_42`. Use "Check with FCM without sending" and a test topic before your first real send.
+
 = Can you customize the plugin for my project? =
 
-Yes. Custom fields, other Firebase services and full integrations with your app are available as paid custom work; see Custom development above.
+Yes. To choose, rename or type fields, or to send push messages, see WP to Firebase Pro above. Posts and custom post types, other Firebase services and full integrations with your app are available as paid custom work; see Custom development above.
 
 = Is the plugin available in my language? =
 
@@ -130,6 +155,10 @@ The plugin is ready for translation, and translations are made by volunteers on 
 1. Settings → WP to Firebase: choose Cloud Firestore or the Realtime Database, choose users, products or orders, turn on live updates and run a full sync.
 
 == Changelog ==
+
+= 2.2.1 (2026-11-19) =
+* The settings page and the plugin's row on the Plugins screen mention the WP to Firebase Pro add-on. Both are hidden when Pro is active.
+* Readme: clearer short description, WP to Firebase Pro section, new questions on custom fields and push messages.
 
 = 2.2.0 (2026-11-15) =
 * Developer: the `wpwtf_record` filter changes a user, product, or order record before it is written to Firebase. It receives the record, the data type, and the WordPress object. Nothing changes unless code uses the filter.
@@ -162,6 +191,9 @@ The plugin is ready for translation, and translations are made by volunteers on 
 * Initial version.
 
 == Upgrade Notice ==
+
+= 2.2.1 =
+Readme and WP to Firebase Pro information. Nothing to change.
 
 = 2.2.0 =
 Adds a developer filter for changing records before they are sent. Nothing to change.
